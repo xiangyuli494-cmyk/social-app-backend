@@ -7,8 +7,8 @@ from auth import login_required, g
 
 post_bp = Blueprint('post', __name__)
 
-ALLOWED_IMAGE = {'.jpg', '.jpeg', '.png', '.gif', '.webp'}
-ALLOWED_VIDEO = {'.mp4', '.mov', '.avi', '.3gp'}
+ALLOWED_IMAGE = {'jpg', 'jpeg', 'png', 'gif', 'webp'}
+ALLOWED_VIDEO = {'mp4', 'mov', 'avi', '3gp'}
 
 
 @post_bp.route('/api/posts', methods=['GET'])
@@ -77,8 +77,9 @@ def create_post():
                         im.save(buf, format=fmt, quality=80)
                         buf.seek(0)
 
+                        mime = f'image/{"jpeg" if ext in ("jpg","jpeg") else ext}'
                         path = f'posts/{uid}/img_{uuid.uuid4().hex[:8]}.{ext}'
-                        url = upload_file('posts', path, buf.read(), f'image/{ext}')
+                        url = upload_file('posts', path, buf.read(), mime)
                         image_urls.append(url)
                     except Exception:
                         pass
