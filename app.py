@@ -53,8 +53,8 @@ def download_page():
 <div class="card">
   <div class="icon">??</div>
   <h1>香芋社交</h1>
-  <p class="version">v1.0 · Android</p>
-  <a class="btn" href="https://ykwmyebnewzhbrjedtxd.supabase.co/storage/v1/object/public/posts/app/app-debug.apk">下载安装</a>
+  <p class="version">v1.1 · Android</p>
+  <a class="btn" href="https://ykwmyebnewzhbrjedtxd.supabase.co/storage/v1/object/public/posts/app/app-debug-0e4318.apk">下载安装</a>
   <p class="tip">下载后点击安装包即可安装<br>如提示"未知来源"，请在设置中允许</p>
 </div>
 </body>
