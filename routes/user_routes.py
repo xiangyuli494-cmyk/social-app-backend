@@ -196,6 +196,30 @@ def _post_dict(p, liked_post_ids=None):
     }
 
 
+@user_bp.route('/api/notifications', methods=['GET'])
+@login_required
+def notifications():
+    my_id = g.current_user['id']
+    supabase = db()
+
+    unread = supabase.table('messages').select('*', count='exact') \
+        .eq('receiver_id', my_id).eq('is_read', 0).execute()
+    unread_count = unread.count or 0
+
+    latest = supabase.table('posts').select('created_at') \
+        .neq('user_id', my_id) \
+        .order('created_at', desc=True).limit(1).execute()
+    latest_post_time = latest.data[0]['created_at'] if latest.data else ''
+
+    return jsonify({
+        'code': 200,
+        'data': {
+            'unread_messages': unread_count,
+            'latest_post_time': latest_post_time
+        }
+    })
+
+
 def dict(row):
     return {
         'id': row['id'], 'uid': row.get('uid') or '',
