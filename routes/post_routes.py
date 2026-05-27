@@ -8,7 +8,6 @@ from auth import login_required, g
 post_bp = Blueprint('post', __name__)
 
 ALLOWED_IMAGE = {'jpg', 'jpeg', 'png', 'gif', 'webp'}
-ALLOWED_VIDEO = {'mp4', 'mov', 'avi', '3gp'}
 
 
 @post_bp.route('/api/posts', methods=['GET'])
@@ -54,10 +53,9 @@ def feed():
 def create_post():
     content = request.form.get('content', '').strip()
     images_str = ''
-    video_str = ''
 
-    if not content and 'images' not in request.files and 'video' not in request.files:
-        return jsonify({'code': 400, 'msg': '请输入内容或上传图片/视频'})
+    if not content and 'images' not in request.files:
+        return jsonify({'code': 400, 'msg': '请输入内容或上传图片'})
 
     uid = g.current_user['id']
 
@@ -85,19 +83,12 @@ def create_post():
                         pass
         images_str = ','.join(image_urls)
 
-    video = request.files.get('video')
-    if video and video.filename:
-        ext = video.filename.rsplit('.', 1)[-1].lower() if '.' in video.filename else ''
-        if ext in ALLOWED_VIDEO:
-            path = f'posts/{uid}/vid_{uuid.uuid4().hex[:8]}.{ext}'
-            video_str = upload_file('posts', path, video.read(), f'video/{ext}')
-
     supabase = db()
     result = supabase.table('posts').insert({
         'user_id': uid,
         'content': content,
         'images': images_str,
-        'video': video_str
+        'video': ''
     }).execute()
     post_id = result.data[0]['id']
 
